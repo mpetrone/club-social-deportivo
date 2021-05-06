@@ -23,17 +23,18 @@ describe("Test membership features", function() {
     expect(await Dao.isMember(addr1.address)).to.equal(true);
     const member = await Dao.members(addr1.address);
     expect(member.name).to.equal(memberName);
+    expect(member.carnetId).to.equal(1);
   });
 
   it("Should not let create the membership again", async function() {
     await expect(Dao.connect(addr1).createMembership("bla",
      {value: ethers.utils.parseUnits("1", "gwei")}))
-      .to.be.reverted;
+      .to.be.revertedWith("Already a member");
   });
 
   it("Should not create the membership when eth sent is not enough", async function() {
     await expect(Dao.connect(add2).createMembership("bla",
      {value: ethers.utils.parseUnits("0.1", "gwei")}))
-      .to.be.reverted;
+      .to.be.revertedWith("Insufficient eth");
   });
 });
