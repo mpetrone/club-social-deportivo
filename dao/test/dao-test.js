@@ -1,21 +1,30 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { ethers, waffle } = require("hardhat");
+const deployMockContract = waffle.deployMockContract;
+const provider = waffle.provider;
+
+const pohAbi = [
+  "function isRegistered(address _submissionID) external view returns(bool)"
+];
 
 describe("Test membership features", function() {
-  var Dao;
-  var owner;
-  var add1;
-  var add2;
+  let Dao;
+  let owner;
+  let addr1;
+  let addr2;
+  let mockPoh;
 
   before(async function() {
-    [owner, addr1, add2] = await ethers.getSigners();
-    const factory = await ethers.getContractFactory("Dao");
-    Dao = await factory.deploy();
+    [owner, addr1, addr2] = provider.getWallets();
+    const daoFactory = await ethers.getContractFactory("Dao");
+    mockPoh = await deployMockContract(owner, pohAbi);
+    Dao = await daoFactory.deploy(mockPoh.address);
     await Dao.deployed();
 	});
 
   it("Should let create a membership", async function() {
     const memberName = "carlos";
+    await mockPoh.mock.isRegistered.withArgs(addr1.address).returns(true);
     
     await Dao.connect(addr1).createMembership(memberName,
      {value: ethers.utils.parseUnits("1", "gwei")});
@@ -33,8 +42,16 @@ describe("Test membership features", function() {
   });
 
   it("Should not create the membership when eth sent is not enough", async function() {
-    await expect(Dao.connect(add2).createMembership("bla",
+    await expect(Dao.connect(addr2).createMembership("bla",
      {value: ethers.utils.parseUnits("0.1", "gwei")}))
       .to.be.revertedWith("Insufficient eth");
+  });
+
+  it("Should not create the membership when address is not human", async function() {
+    await mockPoh.mock.isRegistered.withArgs(addr2.address).returns(false);
+
+    await expect(Dao.connect(addr2).createMembership("bla",
+     {value: ethers.utils.parseUnits("1", "gwei")}))
+      .to.be.revertedWith("Not human");
   });
 });
