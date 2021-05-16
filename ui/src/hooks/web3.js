@@ -8,20 +8,17 @@ const providerOptions = {
     package: WalletConnectProvider,
     options: {
       infuraId: '196440d5d02d41dfa2a8ee5bfd2e96bd',
-    },
-  },
+    }
+  }
 };
 
 const web3Modal = new Web3Modal({
-  network: "kovan",
   cacheProvider: true,
   providerOptions,
 });
 
-export function useWeb3Modal() {
-  const [provider, setProvider] = useState(undefined);
-  const [error, setError] = useState(null);
 
+export function useWeb3Modal(provider, setProvider, userAddress, setUserAddress) {
   // Automatically connect if the provider is cashed but has not yet
   // been set (e.g. page refresh)
   if (web3Modal.cachedProvider && !provider) {
@@ -30,12 +27,34 @@ export function useWeb3Modal() {
 
   async function connectWallet() {
     try {
-      const externalProvider = await web3Modal.connect();
-      const ethersProvider = new ethers.providers.Web3Provider(externalProvider);
-  
+      const provider = await web3Modal.connect();
+      const ethersProvider = new ethers.providers.Web3Provider(provider, "any");
+
+      ethersProvider.on("network", (newNetwork, oldNetwork) => {
+        console.log("Network changed, newNetwork: " + newNetwork + " oldNetwork: " + oldNetwork)
+        // When a Provider makes its initial connection, it emits a "network"
+        // event with a null oldNetwork along with the newNetwork. So, if the
+        // oldNetwork exists, it represents a changing network
+        if (oldNetwork) {
+            window.location.reload();
+        }
+      });
+
+      // Subscribe to accounts change
+      provider.on("accountsChanged", (accounts) => {
+        console.log("accountsChanged: ", userAddress);
+        if(accounts && accounts.lenght != 0 && accounts[0] !== userAddress){
+          setUserAddress(accounts[0])
+        }
+      });
+
+      // Subscribe to session disconnection
+      provider.on("disconnect", (code, reason) => {
+        console.log("disconnect: ", code, reason);
+      });      
+
       setProvider(ethersProvider);
     } catch(e) {
-      setError('NO_WALLET_CONNECTED');
       console.log('NO_WALLET_CONNECTED', e);
     }
   }
@@ -45,5 +64,5 @@ export function useWeb3Modal() {
     setProvider(undefined);
   }
 
-  return { connectWallet, disconnectWallet, provider, error }
+  return { connectWallet, disconnectWallet, web3Modal }
 }

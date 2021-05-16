@@ -1,0 +1,1 @@
+module.exports = ["Memberships", "ProofOfHumanityMock", "Proposals", "Votes"];

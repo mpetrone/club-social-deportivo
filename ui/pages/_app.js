@@ -10,6 +10,8 @@ import Navbar from '../src/components/Navbar';
 const App = ({ Component, pageProps }) => {
   const [darkMode, setDarkMode] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [provider, setProvider] = useState(undefined);
+  const [userAddress, setUserAddress] = useState("");
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -41,20 +43,26 @@ const App = ({ Component, pageProps }) => {
   return (
     <React.Fragment>
       <Head>
-        <title>Nextjs Web3 starter</title>
+        <title>Dao FC</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={muiTheme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Navbar
           {...pageProps}
           darkMode={darkMode}
           toggleMode={toggleMode}
+          provider={provider}
+          setProvider={setProvider}
+          userAddress={userAddress}
+          setUserAddress={setUserAddress}
         />
         <Component
           {...pageProps}
+          darkMode={darkMode}
           isMobile={isMobile}
+          injectedProvider={provider}
+          userAddress={userAddress}
         />
       </ThemeProvider>
     </React.Fragment>

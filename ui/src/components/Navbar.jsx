@@ -15,7 +15,7 @@ const ConnectWallet = dynamic(() => import("./ConnectWallet"), {
   ssr: false,
 });
 
-const Navbar = ({ toggleMode, darkMode }) => {
+const Navbar = ({ toggleMode, darkMode, provider, setProvider, userAddress, setUserAddress}) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -38,7 +38,13 @@ const Navbar = ({ toggleMode, darkMode }) => {
           {darkMode ? <ToggleLightModeIcon htmlColor={theme.custom.palette.iconColor} /> : <ToggleDarkModeIcon htmlColor={theme.custom.palette.iconColor} />}
         </IconButton>
 
-        <ConnectWallet />
+        <ConnectWallet
+          darkMode={darkMode}
+          provider={provider}
+          setProvider={setProvider}
+          userAddress={userAddress}
+          setUserAddress={setUserAddress}
+        />
       </Toolbar>
     </AppBar>
   )

@@ -32,7 +32,7 @@ const lightMuiTheme = createMuiTheme({
       main: "#FFF"
     },
     secondary: {
-      main: amber[500],
+      main: "#561571",
       light: "#feefc3"
     },
     error: {
@@ -120,7 +120,7 @@ const darkMuiTheme = createMuiTheme({
       main: "#212121"
     },
     secondary: {
-      main: amber[500],
+      main: "#561571",
       light: "#41331C"
     },
     error: {

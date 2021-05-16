@@ -11,7 +11,7 @@ contract CarnetERC721 is ERC721, Ownable {
 
   constructor() ERC721("Club Social Deportivo", "CSD") {}
 
-	function mint(address member) public onlyOwner returns (uint256){
+	function mint(address member) external onlyOwner returns (uint256){
     _carnetIds.increment();
 
     uint256 newCarnetId = _carnetIds.current();
