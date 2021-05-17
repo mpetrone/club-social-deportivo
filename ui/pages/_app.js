@@ -6,12 +6,29 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { darkTheme, lightTheme } from '../src/utils/theme';
 import Navbar from '../src/components/Navbar';
+import {  StaticJsonRpcProvider } from "@ethersproject/providers";
+import { getNetwork } from "../src/utils/constants";
+
 
 const App = ({ Component, pageProps }) => {
   const [darkMode, setDarkMode] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [provider, setProvider] = useState(undefined);
   const [userAddress, setUserAddress] = useState("");
+  const [localProvider, setLocalProvider] = useState(undefined);
+  const [network, setNetwork] = useState({});
+
+  useEffect(() => {
+    async function loadLocalProvider() {
+      if(provider){
+        await provider._networkPromise
+        const network = getNetwork(provider)
+        setNetwork(network)
+        setLocalProvider(new StaticJsonRpcProvider(network.rpcUrl))
+      }
+    }
+    loadLocalProvider()
+  }, [provider])
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -63,6 +80,8 @@ const App = ({ Component, pageProps }) => {
           isMobile={isMobile}
           injectedProvider={provider}
           userAddress={userAddress}
+          localProvider={localProvider}
+          network={network}
         />
       </ThemeProvider>
     </React.Fragment>

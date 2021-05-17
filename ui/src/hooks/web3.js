@@ -17,7 +17,6 @@ const web3Modal = new Web3Modal({
   providerOptions,
 });
 
-
 export function useWeb3Modal(provider, setProvider, userAddress, setUserAddress) {
   // Automatically connect if the provider is cashed but has not yet
   // been set (e.g. page refresh)
@@ -36,7 +35,7 @@ export function useWeb3Modal(provider, setProvider, userAddress, setUserAddress)
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
         if (oldNetwork) {
-            window.location.reload();
+            setProvider(ethersProvider)
         }
       });
 

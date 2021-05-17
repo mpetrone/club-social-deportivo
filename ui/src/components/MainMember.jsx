@@ -50,7 +50,7 @@ const MainMember = ({readContracts, writeContracts, tx, userAddress}) => {
 			<div className={classes.root} >
 				{selected == 0 ? <Carnet readContracts={readContracts} userAddress={userAddress}/> : "" }
 				{selected == 1 ? <Proposals readContracts={readContracts} userAddress={userAddress} writeContracts={writeContracts} tx={tx}/> : "" }
-				{selected == 2 ? <NewProposal writeContracts={writeContracts} tx={tx}/> : "" }
+				{selected == 2 ? <NewProposal writeContracts={writeContracts} tx={tx} setSelected={setSelected} /> : "" }
 				{selected == 3 ? <Delegation readContracts={readContracts} userAddress={userAddress} writeContracts={writeContracts} tx={tx}/> : "" }  
 			</div>	
     </div>

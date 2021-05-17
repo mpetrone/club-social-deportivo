@@ -4,13 +4,10 @@ export const INFURA_ID = "fe330bf9328c44ff95cedea956db7ff0";
 //MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
 export const ETHERSCAN_KEY = "V9FIJCPEBFCQJI4XUHA38FF4Q3BTGXCAB2";
 
-//BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
-
-
-export const NETWORK = (chainId)=>{
+export const getNetwork = (provider) => {
+  const actualChainId = provider._network.chainId
   for(let n in NETWORKS){
-    if(NETWORKS[n].chainId==chainId){
+    if(NETWORKS[n].chainId==actualChainId){
       return NETWORKS[n]
     }
   }
@@ -22,7 +19,7 @@ export const NETWORKS = {
         color: '#666666',
         chainId: 31337,
         blockExplorer: '',
-        rpcUrl: "http://" + window.location.hostname + ":8545",
+        rpcUrl: "http://localhost:8545",
     },
     mainnet: {
         name: "mainnet",

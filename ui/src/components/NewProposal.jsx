@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useContractLoader } from "../hooks/contractLoader";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,12 +6,23 @@ import { TextField } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { parseUnits } from "@ethersproject/units";
 import Divider from '@material-ui/core/Divider';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const NewProposal = ({writeContracts, tx}) => {
+const NewProposal = ({writeContracts, tx, setSelected}) => {
   const theme = useTheme();
   const classes = useStyles();
   const [newTitle, setNewTitle] = useState("loading...");
   const [newDescription, setNewDescription] = useState("loading...");
+  const [open, setOpen] = useState(false);
+
+
+  async function onClick() {
+    setOpen(true)
+    await tx(writeContracts.Proposals.createProposal(newTitle, newDescription))
+    setTimeout(setOpen, 1500, false);
+    setTimeout(setSelected, 2000, 1);
+  }
 
   return (
     <div>
@@ -48,14 +58,14 @@ const NewProposal = ({writeContracts, tx}) => {
           color="inherit"
 
           aria-label="mode"
-          onClick={() => {
-            tx(writeContracts.Proposals
-              .createProposal(newTitle, newDescription))
-          }}
+          onClick={onClick}
         >
           <AddCircleIcon htmlColor={theme.custom.palette.iconColor} />
         </IconButton>
       </div>
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
@@ -70,7 +80,11 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     textAlign: 'right'
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  }  
 }));
 
 export default NewProposal;

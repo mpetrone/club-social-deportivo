@@ -5,15 +5,14 @@ import { useState, useEffect } from "react";
 
 let DEBUG = true
 
-
-const loadContract = (contractName, signer) => {
+const loadContract = (networkName, contractName, signer) => {
   const newContract = new ethers.Contract(
-    require(`../contracts/${contractName}.address.js`),
-    require(`../contracts/${contractName}.abi.js`),
+    require(`../contracts/${networkName}/${contractName}.address.js`),
+    require(`../contracts/${networkName}/${contractName}.abi.js`),
     signer,
   );
   try {
-    newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
+    newContract.bytecode = require(`../contracts/${networkName}/${contractName}.bytecode.js`);
   } catch (e) {
     console.log(e);
   }
@@ -21,7 +20,7 @@ const loadContract = (contractName, signer) => {
   return newContract;
 };
 
-export function useContractLoader(providerOrSigner) {
+export function useContractLoader(network, providerOrSigner) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
     async function loadContracts() {
@@ -40,10 +39,10 @@ export function useContractLoader(providerOrSigner) {
             signer = providerOrSigner;
           }
 
-          const contractList = require("../contracts/contracts.js");
+          const contractList = require(`../contracts/${network.name}/contracts.js`);
 
           const newContracts = contractList.reduce((accumulator, contractName) => {
-            accumulator[contractName] = loadContract(contractName, signer);
+            accumulator[contractName] = loadContract(network.name, contractName, signer);
             return accumulator;
           }, {});
           setContracts(newContracts);

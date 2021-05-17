@@ -121,8 +121,8 @@ dist
 .yarn.lock
 .pnp.*
 
-*.abi.js
-*.address.js
-*.bytecode.js
+ui/src/contracts/localhost/*
+
+*mnemonic.txt
 
 yarn.lock

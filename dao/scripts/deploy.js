@@ -4,20 +4,21 @@ const chalk = require("chalk");
 const { ethers, config } = require("hardhat");
 const { utils } = require("ethers");
 
-const publishDir = "../ui/src/contracts";
+const baseDir = "../ui/src/contracts";
 
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
+  const networkName = await getNetworkName(ethers.provider)
 
   const PohMock = await deploy("ProofOfHumanityMock") 
   const Memberships = await deploy("Memberships", [PohMock.address])
   const Proposals = await deploy("Proposals", [Memberships.address])
   const Votes = await deploy("Votes", [Memberships.address, Proposals.address])
-  publishContract("ProofOfHumanityMock")
-  publishContract("Memberships")
-  publishContract("Proposals")
-  publishContract("Votes")
+  publishContract(networkName, "ProofOfHumanityMock")
+  publishContract(networkName, "Memberships")
+  publishContract(networkName, "Proposals")
+  publishContract(networkName, "Votes")
 
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
@@ -25,6 +26,15 @@ const main = async () => {
     "\n\n"
   );
 };
+
+async function getNetworkName(provider) {
+  await provider._networkPromise
+  if(provider._network.name && provider._network.name !== 'unknown'){
+    return provider._network.name 
+  } else {
+    return "localhost"
+  }  
+}
 
 const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) => {
   console.log(` 🛰  Deploying: ${contractName}`);
@@ -55,7 +65,8 @@ const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) 
 };
 
 
-function publishContract(contractName) {
+function publishContract(networkName, contractName) {
+  const publishDir = baseDir + "/" + networkName
   console.log(
     " 💽 Publishing",
     chalk.cyan(contractName),

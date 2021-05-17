@@ -1,4 +1,3 @@
-import { useContractLoader } from "../hooks/contractLoader";
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';

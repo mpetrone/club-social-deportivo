@@ -69,6 +69,12 @@ const useStyles = makeStyles((theme) => ({
       // display: 'none'
     },
   },
+  wrongChain: {
+    flexGrow: 1,
+    margin: 'auto',
+    boxShadow: 'none',
+    color: theme.palette.error.main
+  },
   toggleBtn: {
     marginRight: 20,
     [theme.breakpoints.down('xs')]: {

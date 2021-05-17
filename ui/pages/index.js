@@ -1,33 +1,39 @@
-import Link from 'next/link';
-import {  StaticJsonRpcProvider } from "@ethersproject/providers";
-import { useContractLoader } from "../src/hooks/contractLoader";
+import { useState, useEffect } from 'react';
+import { useContractLoader } from "../src/hooks/ContractLoader";
 import { useContractReader } from "../src/hooks/ContractReader";
 import { Transactor } from "../src/hooks/Transactor";
 import NoConnection from '../src/components/NoConnection';
-import NoHuman from '../src/components/NoHuman';
-import NoMember from '../src/components/NoMember';
-import MainMember from '../src/components/MainMember';
-
+import NoContractDeployed from '../src/components/NoContractDeployed';
+import MainComponent from '../src/components/MainComponent';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 
-const localProvider = new StaticJsonRpcProvider
-
-const Index = ({darkMode, injectedProvider, userAddress}) => {
+const Index = ({darkMode, injectedProvider, localProvider, userAddress, network}) => {
   const classes = useStyles();
-  const readContracts = useContractLoader(localProvider)
-  const writeContracts = useContractLoader(injectedProvider)
-  const isMember = useContractReader(readContracts, "Memberships", "isMember", [userAddress], [readContracts, userAddress])
-  const isHuman = useContractReader(readContracts, "ProofOfHumanityMock", "isRegistered", [userAddress], [readContracts, userAddress])
-  const tx = Transactor(injectedProvider)
+  const [areContractsDeployed, setAreContractsDeployed] = useState(false);
+
+  useEffect(() => {
+    if(network){
+      console.log(network)
+      try {
+        require(`../src/contracts/${network.name}/Memberships.bytecode.js`);
+        setAreContractsDeployed(true)
+      } catch (e) {
+        setAreContractsDeployed(false)
+      }
+    }
+  }, [network])
 
   const component = () => {
-    if(userAddress == "") return <NoConnection />
-    else if(!isHuman) return <NoHuman writeContracts={writeContracts} userAddress={userAddress} tx={tx} />
-    else if(!isMember) return <NoMember writeContracts={writeContracts} tx={tx} />
-    else return <MainMember readContracts={readContracts} writeContracts={writeContracts} tx={tx} userAddress={userAddress}/>  
+    if(userAddress === '') return <NoConnection />
+    else if(!areContractsDeployed) return <NoContractDeployed />
+    else return <MainComponent  darkMode={darkMode}
+          injectedProvider={injectedProvider}
+          userAddress={userAddress}
+          localProvider={localProvider}
+          network={network}/>  
   }
 
   return (
