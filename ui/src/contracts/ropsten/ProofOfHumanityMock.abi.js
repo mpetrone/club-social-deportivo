@@ -1,5 +1,18 @@
 module.exports = [
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "humanAddres",
+        "type": "address"
+      }
+    ],
+    "name": "NewHuman",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",

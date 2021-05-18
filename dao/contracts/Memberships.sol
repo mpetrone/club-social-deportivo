@@ -19,6 +19,8 @@ contract Memberships is Ownable {
 
   mapping (address => Member) public members;
 
+  event NewMember(address memberAddres);
+
   constructor(address _pohAddress) {
     carnetERC721 = new CarnetERC721();
     proofOfHumanity = IProofOfHumanity(_pohAddress);
@@ -38,6 +40,7 @@ contract Memberships is Ownable {
 
     uint256 carnetId = carnetERC721.mint(msg.sender);
     members[msg.sender] = Member(_firstname, _lastname, _imgUrl, carnetId);
+    emit NewMember(msg.sender);
   }
 
   function isMember(address _address) public view returns(bool) {

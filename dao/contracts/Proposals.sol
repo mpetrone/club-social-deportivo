@@ -17,7 +17,7 @@ contract Proposals {
         address creator;
     }
 
-    event ProposalCreated(uint256 proposalId);
+    event ProposalCreated(uint256 proposalId, string title);
 
     Proposal[] public proposals;
 
@@ -35,7 +35,7 @@ contract Proposals {
 
         Proposal memory newProposal = Proposal(newProposalId, _title, _description, false, msg.sender);
         proposals.push(newProposal);
-        emit ProposalCreated(newProposalId);
+        emit ProposalCreated(newProposalId, _title);
         return newProposalId;
     }
 

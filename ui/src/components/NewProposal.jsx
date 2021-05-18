@@ -16,12 +16,19 @@ const NewProposal = ({writeContracts, tx, setSelected}) => {
   const [newDescription, setNewDescription] = useState("loading...");
   const [open, setOpen] = useState(false);
 
-
   async function onClick() {
     setOpen(true)
-    await tx(writeContracts.Proposals.createProposal(newTitle, newDescription))
-    setTimeout(setOpen, 1500, false);
-    setTimeout(setSelected, 2000, 1);
+    const result = await tx(writeContracts.Proposals.createProposal(newTitle, newDescription))
+    if(result){
+      writeContracts["Proposals"].once("ProposalCreated", (id, title) => {
+        if(title == newTitle) {
+          setOpen(false)
+          setSelected(1)
+        }
+      })
+    } else {
+      setOpen(false)
+    }
   }
 
   return (
