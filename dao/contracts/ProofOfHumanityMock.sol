@@ -6,7 +6,7 @@ contract ProofOfHumanityMock {
   event NewHuman(address humanAddres);
 
 
-	function isRegistered(address _address) external view returns (bool) {
+  function isRegistered(address _address) external view returns (bool) {
     return humans[_address];
   }
 
