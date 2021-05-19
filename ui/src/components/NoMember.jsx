@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const NoMember = ({writeContracts, tx}) => {
+const NoMember = ({writeContracts, tx, userAddress, updateState}) => {
   const theme = useTheme();
   const classes = useStyles();
   const [newFirsname, setNewFirsname] = useState("loading...");
@@ -23,8 +23,10 @@ const NoMember = ({writeContracts, tx}) => {
 	     .createMembership(newFirsname, newLastname, newImgUrl, { value: parseUnits("1", "gwei") }))
     if(result){
       writeContracts["Memberships"].once("NewMember", (address) => {
-        if(address == userAddress) {
+      	console.log("NewMember: " + address)
+        if(address === userAddress) {
           setOpen(false)
+          updateState("member done!")
         }
       })
     } else {
@@ -62,7 +64,7 @@ const NoMember = ({writeContracts, tx}) => {
 		    />
 		    <TextField 
 		    	fullWidth
-		    	label="Url de imagen" 
+		    	label="IPFS Hash de la imagen" 
 		    	variant="filled"
 		    	color="secondary"
 		    	required

@@ -20,9 +20,15 @@ const defaultNetwork = "localhost";
 module.exports = {
 
   networks: {
+    hardhat: {
+      mining: {
+        auto: false,
+        interval: 10000
+      }
+    },
     localhost: {
       url: "http://localhost:8545",
-      chainId: 31337
+      chainId: 31337,
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/fe330bf9328c44ff95cedea956db7ff0", //<---- YOUR INFURA ID! (or it won't work)

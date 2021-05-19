@@ -19,6 +19,10 @@ contract Votes {
 
     mapping(uint256 => Vote[]) votes;
 
+    event VoteMade(address voter, uint256 proposalId, bool inFavor);
+    event VoteDelegated(address from, address to);
+
+
     constructor(address _membershipAddress, address _proposalsAddress) {
         memberships = Memberships(_membershipAddress);
         proposals = Proposals(_proposalsAddress);
@@ -42,6 +46,7 @@ contract Votes {
 
         //own vote
         _vote(msg.sender, _proposalId, _inFavor);
+        emit VoteMade(msg.sender, _proposalId, _inFavor);
     }
 
     function _vote(address _voter, uint256 _proposalId, bool _inFavor) private {
@@ -62,6 +67,7 @@ contract Votes {
             delegationsReceived[_to].push(msg.sender);
         }
         voteDelegation[msg.sender] = _to;
+        emit VoteDelegated(msg.sender, _to);
     }
 
     //View

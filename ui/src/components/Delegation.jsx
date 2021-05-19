@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { TextField } from '@material-ui/core';
 import { useContractReader } from "../hooks/ContractReader";
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
   const classes = useStyles();
@@ -13,6 +15,22 @@ const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
   const delegated = useContractReader(readContracts, "Votes", "voteDelegation", [userAddress], [userAddress]);
   const delegationsReceived = useContractReader(readContracts, "Votes", "getDelegationsReceived", [userAddress], [userAddress]);
   const [newDelegate, setNewDelegate] = useState("loading...");
+  const [open, setOpen] = useState(false);
+
+  async function onClick() {
+    setOpen(true)
+    const result = await tx(writeContracts.Votes.delegate(newDelegate))
+    if(result){
+      writeContracts["Votes"].once("VoteDelegated", (_from, _to) => {
+        console.log("VoteDelegated: " + _from)
+        if(_from === userAddress) {
+          setOpen(false)
+        }
+      })
+    } else {
+      setOpen(false)
+    }
+  }
 
   const delegationForm = () => {
     return (
@@ -34,10 +52,7 @@ const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
             edge="start"
             color="inherit"
             aria-label="mode"
-            onClick={() => {
-              tx(writeContracts.Votes
-                .delegate(newDelegate))
-            }}
+            onClick={onClick}
           >
             <AddCircleIcon htmlColor={theme.custom.palette.iconColor} />
           </IconButton>
@@ -59,7 +74,9 @@ const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
       <Typography variant="h5">
         {!isAddressZero(delegated) ? "Has delegado tu voto a " + delegated : delegationForm()} 
       </Typography>
-
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }

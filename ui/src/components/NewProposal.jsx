@@ -21,7 +21,8 @@ const NewProposal = ({writeContracts, tx, setSelected}) => {
     const result = await tx(writeContracts.Proposals.createProposal(newTitle, newDescription))
     if(result){
       writeContracts["Proposals"].once("ProposalCreated", (id, title) => {
-        if(title == newTitle) {
+        console.log("ProposalCreated: " + title)
+        if(title === newTitle) {
           setOpen(false)
           setSelected(1)
         }

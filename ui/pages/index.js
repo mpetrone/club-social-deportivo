@@ -16,7 +16,6 @@ const Index = ({darkMode, injectedProvider, localProvider, userAddress, network}
 
   useEffect(() => {
     if(network){
-      console.log(network)
       try {
         require(`../src/contracts/${network.name}/Memberships.bytecode.js`);
         setAreContractsDeployed(true)

@@ -13,7 +13,6 @@ const Proposal = dynamic(() => import("./Proposal"), {
 
 const Proposals = ({readContracts, userAddress, writeContracts, tx}) => {
   const proposals = useContractReader(readContracts, "Proposals", "getAllProposals", [], [userAddress]);
-  console.log(proposals)
   const voteButtons = () => {
     return (
       <div>
@@ -29,13 +28,16 @@ const Proposals = ({readContracts, userAddress, writeContracts, tx}) => {
 
   const parseProposal = (proposal) => {
     return ( 
-      <Proposal 
-        readContracts={readContracts} 
-        userAddress={userAddress} 
-        proposal={proposal}
-        writeContracts={writeContracts} 
-        tx={tx}
-    /> )
+      <div key={proposal.proposalId} >
+        <Proposal 
+          readContracts={readContracts} 
+          userAddress={userAddress} 
+          proposal={proposal}
+          writeContracts={writeContracts} 
+          tx={tx}
+        />
+      </div>
+   )
   }
 
   const noProposals = () => {

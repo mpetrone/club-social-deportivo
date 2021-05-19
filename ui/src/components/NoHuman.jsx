@@ -6,7 +6,7 @@ import { useTheme, makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const NoHuman = ({writeContracts, userAddress, tx}) => {
+const NoHuman = ({writeContracts, userAddress, tx, updateState}) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -14,12 +14,12 @@ const NoHuman = ({writeContracts, userAddress, tx}) => {
   async function onClick() {
     setOpen(true)
     const result = await tx(writeContracts.ProofOfHumanityMock.addHuman(userAddress))
-    console.log("result: ", result)
     if(result){
       writeContracts["ProofOfHumanityMock"].once("NewHuman", (address) => {
         console.log("NewHuman: " + address)
-        if(address == userAddress) {
+        if(address === userAddress) {
           setOpen(false)
+          updateState("human made")
         }
       })
     } else {
@@ -29,24 +29,29 @@ const NoHuman = ({writeContracts, userAddress, tx}) => {
 
   return (
   	<div>
-  	<Typography variant="h6">
-      	No eres Humano! :(
-    </Typography>
-    <Typography variant="h6">
-          Quieres ser humano?
-    </Typography>
-    <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="mode"
-          onClick={onClick}
-    >
-    	<AddCircleIcon htmlColor={theme.custom.palette.iconColor} />
-    </IconButton>
-    <Backdrop className={classes.backdrop} open={open}>
-      <CircularProgress color="inherit" />
-    </Backdrop>    
-	</div>
+    	<Typography variant="h6">
+        	No eres Humano! :(   
+      </Typography>
+      <br/>
+      <Typography variant="h6">
+      Dado que te encuentras en una red de testing, no podemos verificar si eres humano con el contrato real de Proof of Humanity
+      </Typography>
+      <Typography variant="h6">
+      Para esto hemos creado un registro propio de prueba
+            Quieres ser humano? Haz click en el boton debajo
+      </Typography>
+      <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="mode"
+            onClick={onClick}
+      >
+      	<AddCircleIcon htmlColor={theme.custom.palette.iconColor} />
+      </IconButton>
+      <Backdrop className={classes.backdrop} open={open}>
+        <CircularProgress color="inherit" />
+      </Backdrop>    
+	 </div>
   );
 }
 

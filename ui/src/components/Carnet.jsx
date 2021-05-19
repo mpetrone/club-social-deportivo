@@ -5,22 +5,36 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import { useContractReader } from "../hooks/ContractReader";
-
+const IPFS = require('ipfs-mini');
+const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 const Carnet = ({readContracts, userAddress}) => {
   const classes = useStyles();
   const memberInfo = useContractReader(readContracts, "Memberships", "members", [userAddress], [readContracts, userAddress]);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [imgUrl, setIUmgUrl] = useState("");
+  const [ipfsHash, setIpfsHash] = useState("");
   const [carnetId, setCarnetId] = useState(0);
+
+  const loadImage = (hash) => {
+    try {
+      if(hash !== ""){
+        ipfs.catJSON(hash).then((data) => {
+          console.log("IPFS", data)
+          setIpfsHash(data)
+        })
+      }
+    } catch (e) {
+      console.log("ERROR LOADING IPFS IMG!!", e);
+    }
+  }
 
   useEffect(() => {
     if(memberInfo){
       setFirstname(memberInfo.firstname)
       setLastname(memberInfo.lastname)
-      setIUmgUrl(memberInfo.imgUrl)
       setCarnetId(memberInfo.carnetId.toNumber())
+      loadImage(memberInfo.imgUrl)
     }
   }, [memberInfo])
 
@@ -29,7 +43,7 @@ const Carnet = ({readContracts, userAddress}) => {
       <Card className={classes.root}  >
         <CardMedia
           className={classes.cover}
-          image={imgUrl}
+          image={ipfsHash === '' ? '/img/nouser.jpeg' : ipfsHash}
           title="Carnet"
         />
         <div className={classes.details}>

@@ -26,18 +26,10 @@ export function useContractReader(contracts, contractName, functionName, args, d
         setValue(newValue);
       }
     } catch (e) {
-      console.log(e);
+      console.log(e, contractName, functionName, args, deps);
     }
   }
 
-  // Only pass a provider to watch on a block if we have a contract and no PollTime
-  useOnBlock(
-    (contracts && contracts[contractName]) && contracts[contractName].provider,
-    () => {
-    if (contracts && contracts[contractName]) {
-      updateValue()
-    }
-  })
 
   useEffect(() => {
     updateValue()
