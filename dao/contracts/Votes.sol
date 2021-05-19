@@ -56,6 +56,7 @@ contract Votes {
 
     function delegate(address _to) external onlyMember {
         require(_to != msg.sender, "Self delegation is not allowed");
+        require(voteDelegation[_to] != msg.sender, "Recursive delegation is not allowed");
         require(memberships.isMember(_to), "Delegation is not a member");
         bool added = false;
         for (uint i=0; i < delegationsReceived[_to].length; i++) {

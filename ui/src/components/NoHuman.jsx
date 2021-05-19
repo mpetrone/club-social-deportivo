@@ -16,10 +16,10 @@ const NoHuman = ({writeContracts, userAddress, tx, updateState}) => {
     const result = await tx(writeContracts.ProofOfHumanityMock.addHuman(userAddress))
     if(result){
       writeContracts["ProofOfHumanityMock"].once("NewHuman", (address) => {
-        console.log("NewHuman: " + address)
+        console.log("NewHuman: ", address, userAddress)
         if(address === userAddress) {
           setOpen(false)
-          updateState("human made")
+          updateState("human made" + address)
         }
       })
     } else {

@@ -12,8 +12,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const delegated = useContractReader(readContracts, "Votes", "voteDelegation", [userAddress], [userAddress]);
-  const delegationsReceived = useContractReader(readContracts, "Votes", "getDelegationsReceived", [userAddress], [userAddress]);
+  const [update, setUpdate] = useState("initial");
+  const delegated = useContractReader(readContracts, "Votes", "voteDelegation", [userAddress], [userAddress, update]);
+  const delegationsReceived = useContractReader(readContracts, "Votes", "getDelegationsReceived", [userAddress], [userAddress, update]);
   const [newDelegate, setNewDelegate] = useState("loading...");
   const [open, setOpen] = useState(false);
 
@@ -22,9 +23,10 @@ const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
     const result = await tx(writeContracts.Votes.delegate(newDelegate))
     if(result){
       writeContracts["Votes"].once("VoteDelegated", (_from, _to) => {
-        console.log("VoteDelegated: " + _from)
+        console.log("VoteDelegated: ", _from, _to)
         if(_from === userAddress) {
           setOpen(false)
+          setUpdate("update" + userAddress)
         }
       })
     } else {
@@ -84,7 +86,11 @@ const Delegation = ({readContracts, userAddress, writeContracts, tx}) => {
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: theme.palette.main
+  } 
 }));
 
 export default Delegation;

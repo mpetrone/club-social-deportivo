@@ -26,7 +26,7 @@ const NoMember = ({writeContracts, tx, userAddress, updateState}) => {
       	console.log("NewMember: " + address)
         if(address === userAddress) {
           setOpen(false)
-          updateState("member done!")
+          updateState("member made" + address)
         }
       })
     } else {

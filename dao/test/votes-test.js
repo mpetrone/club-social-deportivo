@@ -99,4 +99,9 @@ describe("Test proposal features", function() {
     expect(vote2.voter).to.equal(addr4.address)
     expect(vote2.inFavor).to.equal(true)
   });
+
+  it("Should not let a recursive delegation of the vote", async function() {
+    await expect(Votes.connect(addr4).delegate(addr3.address))
+      .to.be.revertedWith("Recursive delegation is not allowed");
+  });
 });

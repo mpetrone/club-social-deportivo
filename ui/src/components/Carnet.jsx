@@ -25,6 +25,7 @@ const Carnet = ({readContracts, userAddress}) => {
         })
       }
     } catch (e) {
+      setIpfsHash('')
       console.log("ERROR LOADING IPFS IMG!!", e);
     }
   }

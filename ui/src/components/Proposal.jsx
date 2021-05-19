@@ -34,7 +34,7 @@ const Proposals = ({readContracts, userAddress, proposal, writeContracts, tx}) =
         console.log("VoteMade: ", voter, proposalId, inFavor)
         if(userAddress === voter) {
           setOpen(false)
-          setUpdate("new vote")
+          setUpdate("new vote" + proposalId)
         }
       })
     } else {

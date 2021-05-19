@@ -44,6 +44,8 @@ export function useWeb3Modal(provider, setProvider, userAddress, setUserAddress)
         console.log("accountsChanged: ", userAddress);
         if(accounts && accounts.lenght != 0 && accounts[0] !== userAddress){
           setUserAddress(accounts[0])
+          const ethersProvider = new ethers.providers.Web3Provider(provider, "any");
+          setProvider(ethersProvider);
         }
       });
 
